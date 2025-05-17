@@ -1,38 +1,80 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Reddit Sentiment for {{ symbol }}</title>
-</head>
-<body>
-    <h1>Reddit Sentiment for {{ symbol }}</h1>
+{% extends 'base.html' %}
+{% block content %}
+<section class="text-gray-600 body-font">
+  <div class="container px-5 py-24 mx-auto">
+    <!-- Page Title -->
+    <div class="flex flex-col text-center w-full mb-12">
+      <h1 class="sm:text-3xl text-2xl font-medium title-font text-gray-900">
+        Reddit Sentiment for {{ symbol }}
+      </h1>
+    </div>
 
     {% if result.success %}
-        <p><strong>Average Sentiment:</strong> {{ result.data.average_sentiment }}</p>
-        <p><strong>Posts Count:</strong> {{ result.data.posts_count }}</p>
-        <h2>Sentiment Distribution</h2>
-        <ul>
-            {% for category, count in result.data.sentiment_distribution.items %}
-                <li>{{ category|title }}: {{ count }}</li>
-            {% endfor %}
-        </ul>
-        <h2>Top Posts</h2>
-        <table border="1">
-            <tr>
-                <th>Title</th>
-                <th>Sentiment</th>
-                <th>URL</th>
-            </tr>
-            {% for post in result.data.top_posts %}
-            <tr>
-                <td>{{ post.title }}</td>
-                <td>{{ post.sentiment }}</td>
-                <td><a href="{{ post.url }}" target="_blank">Link</a></td>
-            </tr>
-            {% endfor %}
-        </table>
+      <!-- Summary Cards -->
+      <div class="flex flex-wrap -m-4 mb-12">
+        <div class="p-4 md:w-1/2 w-full">
+          <div class="border border-gray-200 p-6 rounded-lg bg-white shadow-sm">
+            <h2 class="text-lg font-medium text-gray-800 mb-2">Average Sentiment</h2>
+            <p class="text-3xl font-bold text-gray-900">{{ result.data.average_sentiment }}</p>
+          </div>
+        </div>
+        <div class="p-4 md:w-1/2 w-full">
+          <div class="border border-gray-200 p-6 rounded-lg bg-white shadow-sm">
+            <h2 class="text-lg font-medium text-gray-800 mb-2">Posts Count</h2>
+            <p class="text-3xl font-bold text-gray-900">{{ result.data.posts_count }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sentiment Distribution -->
+      <div class="mb-12">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Sentiment Distribution</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {% for category, count in result.data.sentiment_distribution.items %}
+            <div class="border border-gray-200 p-4 rounded-lg bg-white text-center shadow-sm">
+              <p class="text-sm text-gray-600">{{ category|title }}</p>
+              <p class="text-2xl font-bold text-gray-900">{{ count }}</p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Top Posts Table -->
+      <div>
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Top Posts</h2>
+        <div class="overflow-auto border border-gray-200 rounded-lg">
+          <table class="table-auto w-full text-left whitespace-no-wrap">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="px-4 py-2 text-sm font-medium text-gray-600">Title</th>
+                <th class="px-4 py-2 text-sm font-medium text-gray-600">Sentiment</th>
+                <th class="px-4 py-2 text-sm font-medium text-gray-600">Link</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for post in result.data.top_posts %}
+                <tr class="even:bg-gray-50">
+                  <td class="px-4 py-3 text-gray-700">{{ post.title }}</td>
+                  <td class="px-4 py-3 font-semibold text-gray-900">{{ post.sentiment }}</td>
+                  <td class="px-4 py-3">
+                    <a href="{{ post.url }}" target="_blank"
+                       class="text-red-500 hover:underline">
+                      View
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     {% else %}
-        <p style="color: red;">{{ result.error }}</p>
+      <!-- Error Message -->
+      <div class="p-6 bg-red-100 border border-red-200 text-red-700 rounded-lg text-center">
+        {{ result.error }}
+      </div>
     {% endif %}
-</body>
-</html>
+  </div>
+</section>
+{% endblock %}
