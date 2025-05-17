@@ -8,7 +8,16 @@
         ML Reddit Sentiment for {{ symbol }}
       </h1>
     </div>
-
+        <div class="mb-6 flex justify-center space-x-4">
+            <a href="{% url 'reddit_sentiment' %}?symbol={{ symbol }}"
+            class="px-4 py-2 rounded {% if request.resolver_match.url_name == 'reddit_sentiment' %}bg-red-500 text-white{% else %}bg-gray-200 text-gray-700{% endif %}">
+            Classic Sentiment
+            </a>
+            <a href="{% url 'reddit_sentiment_ml' %}?symbol={{ symbol }}"
+            class="px-4 py-2 rounded {% if request.resolver_match.url_name == 'reddit_sentiment_ml' %}bg-red-500 text-white{% else %}bg-gray-200 text-gray-700{% endif %}">
+            ML Sentiment
+            </a>
+        </div>
     {% if result.success %}
       <!-- Summary Cards -->
       <div class="flex flex-wrap -m-4 mb-12">

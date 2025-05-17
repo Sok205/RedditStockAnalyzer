@@ -12,7 +12,10 @@
   <ul>
     {% for stock in favourites %}
       <li class="mb-2 flex items-center">
-        <span class="mr-4">{{ stock.symbol }}</span>
+
+          <a href="{% url 'reddit_sentiment' %}?symbol={{ stock.symbol }}" class="text-blue-500 hover:underline mr-2">
+            <span class="mr-4">{{ stock.symbol }}</span>
+          </a>
         <form method="post" action="{% url 'remove_favourite_stock' stock.symbol %}">
           {% csrf_token %}
           <button type="submit" class="text-red-500 hover:underline">Remove</button>
