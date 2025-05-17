@@ -20,7 +20,10 @@
       <!-- Navigation -->
       <nav class="space-x-4">
         {% if user.is_authenticated %}
-          <span class="text-sm text-gray-600">Welcome, <strong>{{ user.username }}</strong></span>
+          <a href="{% url 'profile' %}"
+             class="inline-block text-sm px-3 py-1 rounded hover:bg-red-100 transition">
+              <strong>{{ user.username }}</strong>
+          </a>
           <a href="{% url 'logout' %}"
              class="inline-block text-sm px-3 py-1 rounded hover:bg-red-100 transition">
             Logout
