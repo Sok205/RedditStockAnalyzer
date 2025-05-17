@@ -1,5 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
+  <div class="max-w-2xl mx-auto mt-8 p-6 bg-white rounded-lg shadow-md">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Analyze Reddit Sentiment for a Stock</h2>
+    <form method="post" action="{% url 'reddit_sentiment_ml' %}" class="space-y-4">
+      {% csrf_token %}
+      <div class="space-y-2">
+        {{ form.as_p|safe }}
+      </div>
+      <button type="submit" class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-sm transition duration-200">
+        Analyze
+      </button>
+    </form>
+  </div>
 {% endblock %}

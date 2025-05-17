@@ -1,16 +1,24 @@
 """
 stock/views.py
 """
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from stock.reddit_sentiment import RedditSentiment
 from stock.ml.analyzer_ml import MlSentimentAnalyzer
+from .form import StockSymbolForm
 def home(request):
     """
     Renders the home page.
     :param request:
     :return:
     """
-    return render(request, 'stock/home.html')
+    if request.method == 'POST':
+        form = StockSymbolForm(request.POST)
+        if form.is_valid():
+            symbol = form.cleaned_data['symbol']
+            return redirect('reddit_sentiment_ml') + f'?symbol={symbol}'
+    else:
+        form = StockSymbolForm()
+    return render(request, 'stock/home.html', {'form': form})
 
 def reddit_sentiment(request):
     symbol = request.GET.get('symbol', 'AAPL')
@@ -20,18 +28,27 @@ def reddit_sentiment(request):
 
 
 def reddit_sentiment_ml_view(request):
-    symbol = request.GET.get('symbol', 'AAPL')
+    if request.method == 'POST':
+        form = StockSymbolForm(request.POST)
+        if form.is_valid():
+            symbol = form.cleaned_data['symbol']
+        else:
+            symbol = 'AAPL'
+    else:
+        form = StockSymbolForm()
+        symbol = request.GET.get('symbol', 'AAPL')
+
     reddit = RedditSentiment()
     ml_analyzer = MlSentimentAnalyzer()
     posts_df = reddit.get_reddit_posts(symbol, limit=50)
 
     if posts_df.empty:
-        return render(request, 'stock/sentiment.html', {
+        return render(request, 'stock/sentimentml.html', {
+            'form': form,
             'result': {'success': False, 'error': f'No posts for {symbol}'},
             'symbol': symbol
         })
 
-    # Preprocessing and analyze sentiment using ML model
     posts_df['preprocessed'] = posts_df['text'].apply(ml_analyzer.preprocess)
     posts_df['ml_sentiment'] = posts_df['preprocessed'].apply(ml_analyzer.analyze_sentiment)
 
@@ -47,4 +64,4 @@ def reddit_sentiment_ml_view(request):
         },
         'error': None
     }
-    return render(request, 'stock/sentimentml.html', {'result': result, 'symbol': symbol})
+    return render(request, 'stock/sentimentml.html', {'form': form, 'result': result, 'symbol': symbol})

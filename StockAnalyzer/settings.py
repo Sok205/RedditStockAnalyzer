@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'stock',
 
     'rest_framework',
+    'tailwind',
+    'theme',
+
 ]
 
 MIDDLEWARE = [
@@ -126,3 +129,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+TAILWIND_APP_NAME = 'theme'
+
