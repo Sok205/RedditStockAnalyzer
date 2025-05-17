@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reddit Sentiment for {{ symbol }}</title>
+</head>
+<body>
+    <h1>Reddit Sentiment for {{ symbol }}</h1>
+
+    {% if result.success %}
+        <p><strong>Average Sentiment:</strong> {{ result.data.average_sentiment }}</p>
+        <p><strong>Posts Count:</strong> {{ result.data.posts_count }}</p>
+        <h2>Sentiment Distribution</h2>
+        <ul>
+            {% for category, count in result.data.sentiment_distribution.items %}
+                <li>{{ category|title }}: {{ count }}</li>
+            {% endfor %}
+        </ul>
+        <h2>Top Posts</h2>
+        <table border="1">
+            <tr>
+                <th>Title</th>
+                <th>Sentiment</th>
+                <th>URL</th>
+            </tr>
+            {% for post in result.data.top_posts %}
+            <tr>
+                <td>{{ post.title }}</td>
+                <td>{{ post.sentiment }}</td>
+                <td><a href="{{ post.url }}" target="_blank">Link</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p style="color: red;">{{ result.error }}</p>
+    {% endif %}
+</body>
+</html>

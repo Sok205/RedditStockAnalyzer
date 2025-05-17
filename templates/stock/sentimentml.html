@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ML Reddit Sentiment for {{ symbol }}</title>
+</head>
+<body>
+    <h1>ML Reddit Sentiment for {{ symbol }}</h1>
+
+    {% if result.success %}
+        <p><strong>Average ML Sentiment:</strong> {{ result.data.average_sentiment }}</p>
+        <p><strong>Posts Count:</strong> {{ result.data.posts_count }}</p>
+        <h2>Top Posts (by ML Sentiment)</h2>
+        <table>
+            <tr>
+                <th>Title</th>
+                <th>ML Sentiment</th>
+                <th>URL</th>
+            </tr>
+            {% for post in result.data.top_posts %}
+            <tr>
+                <td>{{ post.title }}</td>
+                <td>{{ post.ml_sentiment }}</td>
+                <td><a href="{{ post.url }}" target="_blank">Link</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p style="color: red;">{{ result.error }}</p>
+    {% endif %}
+</body>
+</html>
