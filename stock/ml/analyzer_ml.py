@@ -8,6 +8,7 @@ from nltk.corpus import stopwords
 import re
 import nltk
 
+#TODO: Make the model more accurate
 class MlSentimentAnalyzer:
     def __init__(self):
         """
