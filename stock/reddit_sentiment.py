@@ -61,11 +61,12 @@ class RedditSentiment:
         analysis = TextBlob(clean_text)
         return analysis.sentiment.polarity
 
-    def get_reddit_posts(self, stock_symbol, limit=100):
+    def get_reddit_posts(self, stock_symbol,limit = 100, time_filter="week"):
         """
         Fetch Reddit posts for a given stock symbol
         :param stock_symbol: Stock symbol to search for
         :param limit: Number of posts to fetch
+        :param time_filter: Time period to filter posts (week, month, year)
         :return: DataFrame with Reddit posts and their sentiment scores
         """
         posts = []
@@ -74,7 +75,7 @@ class RedditSentiment:
             # Fetching posts from multiple subreddits
             for post in self.reddit.subreddit(
                             'stocks+investing+wallstreetbets').search(
-                            f'{stock_symbol} stock', limit=limit, time_filter='month'):
+                            f'{stock_symbol} stock', limit=limit, time_filter=time_filter):
 
                 full_text = f"{post.title} {post.selftext}"
                 sentiment_score = self.get_sentiment(full_text)
@@ -96,13 +97,14 @@ class RedditSentiment:
 
         return pd.DataFrame(posts)
 
-    def analyze_sentiment(self, stock_symbol):
+    def analyze_sentiment(self, stock_symbol, time_filter="week"):
         """
         Analyze sentiment of Reddit posts for a given stock symbol
         :param stock_symbol:
+        :param time_filter:
         :return:
         """
-        posts_df = self.get_reddit_posts(stock_symbol)
+        posts_df = self.get_reddit_posts(stock_symbol, time_filter=time_filter)
 
         if len(posts_df) == 0:
             return {
@@ -127,7 +129,8 @@ class RedditSentiment:
                 'average_sentiment': float(avg_sentiment),
                 'sentiment_distribution': sentiment_count,
                 'posts_count': len(posts_df),
-                'top_posts': top_posts.to_dict(orient='records')
+                'top_posts': top_posts.to_dict(orient='records'),
+                'time_filter': time_filter,
             },
             'error': None
         }

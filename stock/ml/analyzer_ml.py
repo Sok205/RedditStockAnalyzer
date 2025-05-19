@@ -9,6 +9,7 @@ import re
 import nltk
 
 #TODO: Make the model more accurate
+#TODO: Add more information to be displayed
 class MlSentimentAnalyzer:
     def __init__(self):
         """

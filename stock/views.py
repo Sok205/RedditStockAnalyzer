@@ -21,10 +21,23 @@ def home(request):
     return render(request, 'stock/home.html', {'form': form})
 
 def reddit_sentiment(request):
-    symbol = request.GET.get('symbol', 'AAPL')
-    sentiment = RedditSentiment()
-    result = sentiment.analyze_sentiment(symbol)
-    return render(request, 'stock/sentiment.html', {'result': result, 'symbol': symbol})
+    symbol = request.GET.get('symbol', '')
+    time_filter = request.GET.get('time_filter', 'week')
+
+    if time_filter not in ["week", "month", "year"]:
+        time_filter = "week"
+
+    if symbol:
+        sentiment = RedditSentiment()
+        result = sentiment.analyze_sentiment(symbol, time_filter=time_filter)
+        result['data']['time_filter'] = time_filter
+    else:
+        result = {
+            'success': False,
+            'error': 'No symbol provided',
+            'data': None
+        }
+    return render(request, 'stock/sentiment.html', {'result': result, 'symbol': symbol, 'time_filter': time_filter})
 
 
 def reddit_sentiment_ml_view(request):
