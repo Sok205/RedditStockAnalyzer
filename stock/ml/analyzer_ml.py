@@ -76,7 +76,7 @@ class MlSentimentAnalyzer:
         """
         vader_sentiment = self.sia.polarity_scores(text)
 
-        text_length = len(text)
+        text_length = min(1000, len(text))
         word_count = len(text.split())
         has_question = 1 if '?' in text else 0
         has_exclamation = 1 if '!' in text else 0

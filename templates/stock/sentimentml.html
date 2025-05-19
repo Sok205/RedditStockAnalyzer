@@ -24,7 +24,7 @@
         <form method="get" class="flex items-center space-x-2">
             <input type="hidden" name="symbol" value="{{ symbol }}">
             <label for="time_filter" class="font-medium text-gray-700">Time Period:</label>
-            <select id="time_filter" name="time_filter" onchange="this.form.submit()"
+            <select id="time_filter" name="time_filter"
                     class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500">
                 <option value="week" {% if time_filter == 'week' %}selected{% endif %}>Week</option>
                 <option value="month" {% if time_filter == 'month' %}selected{% endif %}>Month</option>
@@ -87,4 +87,9 @@
     {% endif %}
   </div>
 </section>
+    <script>
+    document.getElementById('time_filter').addEventListener('change', function() {
+        setTimeout(() => this.form.submit(), 300);
+    });
+    </script>
 {% endblock %}
