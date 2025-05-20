@@ -4,6 +4,7 @@ stock/views.py
 from django.shortcuts import render, redirect
 from stock.reddit_sentiment import RedditSentiment
 from stock.ml.analyzer_ml import MlSentimentAnalyzer
+from .stock_data import FetchStockData
 from .form import StockSymbolForm
 def home(request):
     """
@@ -35,14 +36,21 @@ def reddit_sentiment(request):
     if symbol:
         sentiment = RedditSentiment()
         result = sentiment.analyze_sentiment(symbol, time_filter=time_filter)
-        result['data']['time_filter'] = time_filter
+        if result['success'] and result['data']:
+            result['data']['time_filter'] = time_filter
+
     else:
         result = {
             'success': False,
             'error': 'No symbol provided',
             'data': None
         }
-    return render(request, 'stock/sentiment.html', {'result': result, 'symbol': symbol, 'time_filter': time_filter})
+
+    stock_fetcher = FetchStockData()
+    stock_data = stock_fetcher.get_stock_data(symbol)
+
+
+    return render(request, 'stock/sentiment.html', {'result': result, 'symbol': symbol, 'time_filter': time_filter, 'stock_data': stock_data})
 
 
 def reddit_sentiment_ml_view(request):
@@ -94,9 +102,13 @@ def reddit_sentiment_ml_view(request):
             'data': None
         }
 
+    stock_fetcher = FetchStockData()
+    stock_data = stock_fetcher.get_stock_data(symbol)
+
     return render(request, 'stock/sentimentml.html', {
         'form': form,
         'result': result,
         'symbol': symbol,
-        'time_filter': time_filter
+        'time_filter': time_filter,
+        'stock_data': stock_data
     })
